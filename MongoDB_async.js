@@ -31,64 +31,41 @@ function connectS() {
 }
 
 
-//  클라이언트 생성
-// const client = new MongoClient(url, { useNewUrlParser: true });
-
-
 async function testConnect() {
     var connect = await connectS();
     console.log(connect);
     connect.close();
 }
-testConnect();
-//  접속 테스트
-// function testConnect() {
-   
-//     async()
-//     .then(client => {
-//                 //  성공시
-//                 console.log(client);
-//                 client.close();
-//             })
-//             .catch(reason => {
-//                 console.error(reason);
-//             })
-//     // client.connect((err, client) => {
-//     //     client.connect()
-//     //     .then(client => {
-//     //         //  성공시
-//     //         console.log(client);
-//     //         client.close();
-//     //     })
-//     //     .catch(reason => {
-//     //         console.error(reason);
-//     //     })
-//     // });
-// }
 // testConnect();
 
 //  한개 문서 insert
 //  INSERT INTO mydb.friends VALUE(...);
 //  db.friends.insert({ 문서 })
-function testInsertOne(name) {
-    async()
-    .then(client => {
-        //  DB 선택
-        const db = client.db("mydb");
-        //  컬렉션 선택 후 쿼리 수행
-        // console.log(db.collection("mydb"));
-        db.collection("friends").insertOne({ name: name })
-        .then(result => {
-            console.log(result);
-            console.log("새로 삽입된 문서의 ID:", result.insertedId);
-            client.close();
-        });
-    })
-    .catch(reason => {
-        console.log(reason);
-    })
+async function testInsertOne(name) {
+    var client = await connectS();
+    const db = client.db("mydb");
+    var result = await db.collection("friends").insertOne({name : name});
+    console.log(result);
+    console.log("새로 삽입된 문서의 ID:",result.insertedId);
+    client.close();
+    // async()
+    // .then(client => {
+    //     //  DB 선택
+    //     const db = client.db("mydb");
+    //     //  컬렉션 선택 후 쿼리 수행
+    //     // console.log(db.collection("mydb"));
+    //     db.collection("friends").insertOne({ name: name })
+    //     .then(result => {
+    //         console.log(result);
+    //         console.log("새로 삽입된 문서의 ID:", result.insertedId);
+    //         client.close();
+    //     });
+    // })
+    // .catch(reason => {
+    //     console.log(reason);
+    // })
 }
-// testInsertOne("홍길동");
+testInsertOne("홍길동");
 
 //  다수 문서 삽입
 //  INSERT INTO friends VALUE(...), (...), (...)
