@@ -3,10 +3,12 @@ const url = "mongodb://localhost:27017";    //  접속 url
 const dbName = "mydb";
 
 //  클라이언트 생성
-const client = new MongoClient(url, { useNewUrlParser: true });
+// const client = new MongoClient(url, { useNewUrlParser: true });
+
 
 //  접속 테스트
 function testConnect() {
+    const client = new MongoClient(url, { useNewUrlParser: true });
     client.connect((err, client) => {
         //  콜백
         /*
@@ -34,6 +36,7 @@ function testConnect() {
 //  INSERT INTO mydb.friends VALUE(...);
 //  db.friends.insert({ 문서 })
 function testInsertOne(name) {
+    const client = new MongoClient(url, { useNewUrlParser: true });
     client.connect()
     .then(client => {
         //  DB 선택
@@ -57,6 +60,7 @@ function testInsertOne(name) {
 //  INSERT INTO friends VALUE(...), (...), (...)
 //  db.friends.insertMany([ { 문서 }, { 문서 }, ...])
 function testInsertMany(names) {
+    const client = new MongoClient(url, { useNewUrlParser: true });
     console.log(names, "는 배열?", Array.isArray(names));
     if (Array.isArray(names)) { //  names가 배열
         client.connect()
@@ -84,6 +88,7 @@ function testInsertMany(names) {
 // testInsertMany("징하다키스칸");
 
 function testDeletAll() {
+    const client = new MongoClient(url, { useNewUrlParser: true });
     client.connect()
     .then(client =>
         {
@@ -98,6 +103,7 @@ function testDeletAll() {
 testDeletAll();
 
 function testInsertOneDOC(doc) {
+    const client = new MongoClient(url, { useNewUrlParser: true });
     client.connect()
     .then(client =>{
         const db = client.db("mydb");
@@ -115,6 +121,7 @@ function testInsertOneDOC(doc) {
 // testInsertOneDOC({name:"임꺽정",job:"도적"});
 
 function testInsertManyDoc(docs) {    
+    const client = new MongoClient(url, { useNewUrlParser: true });
     if (Array.isArray(docs)) { //  names가 배열
         client.connect()
         .then(client => {
@@ -145,3 +152,22 @@ exports.testInsertOneDOC =testInsertOneDOC;
 exports.testDeletAll = testDeletAll;
 exports.testInsertMany = testInsertMany;
 
+function testUpdateByJob(name,job) {
+    const client = new MongoClient(url, { useNewUrlParser: true });
+    client.connect()
+    .then(client =>{
+        const db = client.db("mydb");
+        db.collection("friends").updateMany(
+            { name: name}, /* 조건 객체 */
+            {
+                $set: { job: job }  //  $set 연산자 필수
+            }
+        ).then(result => {
+            console.log(result.modifiedCount, "개 업데이트,",
+                        result.upsertedCount, "개 업서트");
+        }).then(() => {
+            client.close();
+        })
+    })
+}
+testUpdateByJob("고길동", "직장인");
